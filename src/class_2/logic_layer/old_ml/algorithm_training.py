@@ -2,7 +2,7 @@ import os
 import pickle
 import pandas as pd
 import numpy as np
-from sklearn.datasets import load_breast_cancer
+from sklearn.datasets import load_breast_cancer, make_circles
 
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.preprocessing import StandardScaler
@@ -58,9 +58,16 @@ class AlgorithmTraining:
     # ------------------------------------------------------------
     def run(self):
         # 1) Load dataset
-        data = load_breast_cancer()
-        df = pd.DataFrame(data.data, columns=data.feature_names)
-        df["target"] = data.target
+        X_raw, y_raw = make_circles(
+            n_samples=2000,
+            noise=0.30,  # ruido fuerte → destruye ML clásico
+            factor=0.20,  # inner circle chico
+            random_state=42
+        )
+
+        df = pd.DataFrame(X_raw, columns=["x1", "x2"])
+        df["target"] = y_raw
+        self._print_dataset_stats(df)
         self._print_dataset_stats(df)
 
         # 2) Split into features/labels
@@ -88,29 +95,28 @@ class AlgorithmTraining:
         models = {
             "logistic_regression": {
                 "model": LogisticRegression(max_iter=2000),
-                "params": {"C": [0.01, 0.1, 1, 10, 100], "solver": ["lbfgs"]},
+                "params": {"C": [0.01, 0.1, 1, 10], "solver": ["lbfgs"]},
             },
-            "svm": {
-                "model": SVC(probability=True),
-                "params": {
-                    "kernel": ["rbf", "linear"],
-                    "C": [0.1, 1, 10],
-                    "gamma": ["scale", "auto"],
-                },
+
+            "svm_linear": {
+                "model": SVC(kernel="linear"),
+                "params": {"C": [0.01, 0.1, 1, 10]},
             },
-            "decision_tree": {
+
+            "decision_tree_weak": {
                 "model": DecisionTreeClassifier(),
                 "params": {
-                    "max_depth": [3, 5, 7, 10],
-                    "criterion": ["gini", "entropy"],
-                    "min_samples_split": [2, 5, 10],
+                    "max_depth": [2, 3],
+                    "criterion": ["gini"],
+                    "min_samples_split": [20]
                 },
             },
-            "knn": {
+
+            "knn_weak": {
                 "model": KNeighborsClassifier(),
                 "params": {
-                    "n_neighbors": [3, 5, 7, 9],
-                    "weights": ["uniform", "distance"],
+                    "n_neighbors": [15, 25, 35],
+                    "weights": ["uniform"]
                 },
             },
         }

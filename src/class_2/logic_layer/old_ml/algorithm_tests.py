@@ -1,7 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-from sklearn.datasets import load_breast_cancer
+from sklearn.datasets import load_breast_cancer, make_circles
 
 from sklearn.metrics import (
     confusion_matrix,
@@ -23,9 +23,17 @@ class AlgorithmsTests:
     # Load test data (same split as training)
     # ---------------------------------------------------------
     def load_test_data(self):
-        data = load_breast_cancer()
-        df = pd.DataFrame(data.data, columns=data.feature_names)
-        df["target"] = data.target
+        X_raw, y_raw = make_circles(
+            n_samples=2000,
+            noise=0.30,
+            factor=0.20,
+            random_state=42
+        )
+
+        df = pd.DataFrame(X_raw, columns=["x1", "x2"])
+        df["target"] = y_raw
+
+
         X = df.drop(columns=["target"])
         y = df["target"]
 
@@ -40,7 +48,7 @@ class AlgorithmsTests:
     # ---------------------------------------------------------
     def load_models(self):
         models = {}
-        for name in ["logistic_regression", "svm", "decision_tree", "knn"]:
+        for name in ["logistic_regression", "svm_linear", "decision_tree_weak", "knn_weak"]:
             obj = load(f"{self.models_dir}/{name}.pkl")
             models[name] = {
                 "model": obj["model"],

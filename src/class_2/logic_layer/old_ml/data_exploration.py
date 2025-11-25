@@ -1,19 +1,24 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-from sklearn.datasets import load_breast_cancer
+from sklearn.datasets import make_moons, make_circles
 from sklearn.decomposition import PCA
 
 
 class DataExploration:
 
     # ==============================
-    # Load dataset
+    # Load NON-LINEAR dataset
     # ==============================
     @staticmethod
     def load_dataset():
-        data = load_breast_cancer()
-        df = pd.DataFrame(data.data, columns=data.feature_names)
-        df["target"] = data.target
+        X, y = make_moons(
+            n_samples=2000,
+            noise=0.25,
+            random_state=42
+        )
+
+        df = pd.DataFrame(X, columns=["feature1", "feature2"])
+        df["target"] = y
         return df
 
     # ==============================
@@ -32,7 +37,7 @@ class DataExploration:
     @staticmethod
     def plot_target_distribution(df):
         df["target"].value_counts().plot(kind="bar")
-        plt.title("Target Distribution (0 = malignant, 1 = benign)")
+        plt.title("Target Distribution (0 / 1)")
         plt.xlabel("target")
         plt.ylabel("count")
         plt.show()
@@ -42,17 +47,10 @@ class DataExploration:
     # ==============================
     @staticmethod
     def plot_boxplots_by_target(df):
-        features_to_plot = [
-            "mean radius",
-            "mean texture",
-            "mean perimeter",
-            "mean area"
-        ]
-
-        for f in features_to_plot:
+        for f in ["feature1", "feature2"]:
             plt.figure(figsize=(6, 4))
             df.boxplot(column=f, by="target")
-            plt.title(f"{f} by class (0=malignant, 1=benign)")
+            plt.title(f"{f} by class")
             plt.suptitle("")
             plt.xlabel("target")
             plt.ylabel(f)
@@ -63,12 +61,10 @@ class DataExploration:
     # ==============================
     @staticmethod
     def plot_histograms(df):
-        features_to_plot = ["mean radius", "mean texture"]
-
-        for f in features_to_plot:
+        for f in ["feature1", "feature2"]:
             plt.figure(figsize=(6, 4))
-            df[df["target"] == 0][f].hist(alpha=0.6, label="malignant")
-            df[df["target"] == 1][f].hist(alpha=0.6, label="benign")
+            df[df["target"] == 0][f].hist(alpha=0.6, label="class 0")
+            df[df["target"] == 1][f].hist(alpha=0.6, label="class 1")
             plt.title(f"Histogram: {f}")
             plt.legend()
             plt.xlabel(f)
@@ -82,14 +78,14 @@ class DataExploration:
     def plot_scatter(df):
         plt.figure(figsize=(6, 5))
         plt.scatter(
-            df["mean radius"],
-            df["mean texture"],
+            df["feature1"],
+            df["feature2"],
             c=df["target"],
             cmap="coolwarm",
             alpha=0.7
         )
-        plt.xlabel("mean radius")
-        plt.ylabel("mean texture")
+        plt.xlabel("feature1")
+        plt.ylabel("feature2")
         plt.title("Scatter Plot (colored by target)")
         plt.show()
 
@@ -116,20 +112,20 @@ class DataExploration:
     # ==============================
     @staticmethod
     def run():
-        df = DataExploration.load_dataset()
+        # 🔥 Dataset imposible para ML clásico
+        X, y = make_circles(
+            n_samples=2000,
+            noise=0.30,  # Ruido grande → rompe TODO ML clásico
+            factor=0.20,  # Círculo interno súper chico
+            random_state=42
+        )
 
-        # Basic overview
+        df = pd.DataFrame(X, columns=["feature1", "feature2"])
+        df["target"] = y
+
         DataExploration.show_basic_info(df)
-
-        # Class balance
         DataExploration.plot_target_distribution(df)
-
-        # Stats vis
         DataExploration.plot_boxplots_by_target(df)
         DataExploration.plot_histograms(df)
-
-        # Scatter
         DataExploration.plot_scatter(df)
-
-        # PCA
         DataExploration.plot_pca(df)
