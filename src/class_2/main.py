@@ -2,16 +2,21 @@
 Interactive command runner for Class 2.
 English-only comments.
 """
-from src.class_2.logic_layer.neural_network.neural_network_tests import NeuralNetworkTests
-from src.class_2.logic_layer.neural_network.nn_data_exploration import NNDataExploration
+from src.class_2.logic_layer.neural_network_plain__vainilla.neural_network_tests import NeuralNetworkTests
+from src.class_2.logic_layer.neural_network_plain__vainilla.nn_data_exploration import NNDataExploration
+
+
 # ---------- OLD ML ----------
 from src.class_2.logic_layer.old_ml.algorithm_tests import AlgorithmsTests
 from src.class_2.logic_layer.old_ml.data_exploration import DataExploration
 from src.class_2.logic_layer.old_ml.algorithm_training import AlgorithmTraining
 
 # ---------- NEURAL NETWORK ----------
-from src.class_2.logic_layer.neural_network.neural_network_training import NeuralNetworkTraining
+from src.class_2.logic_layer.neural_network_plain__vainilla.neural_network_training import NeuralNetworkTraining
 
+# ---------- SENTIMENT ANALYSIS ----------
+from src.class_2.logic_layer.neural_network_sentiment.sentiment_tests import SentimentTests
+from src.class_2.logic_layer.neural_network_sentiment.sentiment_training import SentimentTraining
 
 
 
@@ -36,6 +41,10 @@ def run_help():
     print("  nn_explore      → Visual exploration for NN dataset (circles)")
     print("  nn_train        → Train Neural Network + save model + architecture PNG")
     print("  nn_test         → Evaluate NN (confusion matrix, ROC/PR curves, samples)")
+    print("")
+    print("SENTIMENT ANALYSIS MODULE:")
+    print("  sent_train      → Train IMDB sentiment model (embedding + dense NN)")
+    print("  sent_test       → Evaluate sentiment model + confusion matrix + text samples")
     print("")
     print("SYSTEM:")
     print("  help            → Show this help message")
@@ -78,7 +87,6 @@ def main():
 
         # ---------- NEURAL NETWORK ----------
         elif cmd == "nn_explore":
-
             NNDataExploration.run()
 
         elif cmd == "nn_train":
@@ -87,6 +95,16 @@ def main():
 
         elif cmd == "nn_test":
             tester = NeuralNetworkTests(models_dir="./trained_models_nn/")
+            tester.run()
+
+
+        # ---------- SENTIMENT ----------
+        elif cmd == "sent_train":
+            trainer = SentimentTraining(output_dir="./trained_models_sentiment/")
+            trainer.run()
+
+        elif cmd == "sent_test":
+            tester = SentimentTests(models_dir="./trained_models_sentiment/")
             tester.run()
 
 
