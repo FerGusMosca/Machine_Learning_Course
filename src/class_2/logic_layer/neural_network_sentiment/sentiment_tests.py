@@ -90,7 +90,8 @@ class SentimentTests:
             "i hated every second of it",
             "best film of the year",
             "I am hungry",
-            "It could have been better for sure"
+            "It could have been better for sure",
+            "The director finds new ways to disappoint himself"
 
 
         ]
