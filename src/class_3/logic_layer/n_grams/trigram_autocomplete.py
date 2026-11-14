@@ -12,7 +12,7 @@ class TrigramAutocomplete:
 
     def __init__(self):
         print("[ACOMP-TRI] Loading AG_NEWS corpus...")
-        ds = load_dataset("ag_news")
+        ds = load_dataset("fancyzhx/ag_news")
 
         print("[ACOMP-TRI] Building corpus...")
         texts = [t["text"].lower() for t in ds["train"]]

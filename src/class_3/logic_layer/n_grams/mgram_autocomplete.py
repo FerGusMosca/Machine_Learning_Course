@@ -11,7 +11,7 @@ class NGramAutocomplete:
 
     def __init__(self):
         print("[ACOMP] Loading AG_NEWS corpus...")
-        ds = load_dataset("ag_news")
+        ds = load_dataset("fancyzhx/ag_news")
 
         print("[ACOMP] Building corpus...")
         texts = [t["text"].lower() for t in ds["train"]]
