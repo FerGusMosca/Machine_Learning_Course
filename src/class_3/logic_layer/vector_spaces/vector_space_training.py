@@ -21,7 +21,7 @@ class VSTraining:
     def run(self):
 
         print("\n[VS] Loading TweetEval (sentiment)...")
-        ds = load_dataset("tweet_eval", "sentiment")
+        ds = load_dataset("cardiffnlp/tweet_eval", "sentiment")
 
         texts = ds["train"]["text"]
         labels = ds["train"]["label"]

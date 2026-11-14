@@ -19,7 +19,7 @@ class NBTraining:
 
     def run(self):
         print("\n[NB] Loading TweetEval (sentiment)...")
-        ds = load_dataset("tweet_eval", "sentiment")
+        ds = load_dataset("cardiffnlp/tweet_eval", "sentiment")
 
         train_texts = ds["train"]["text"]
         train_labels = ds["train"]["label"]
